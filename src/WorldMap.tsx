@@ -10,6 +10,8 @@ const WorldMap = ({ targetCountry }) => {
   const highlightedCountryRef = useRef<string | null>(null);
   const submitButtonRef = useRef<HTMLButtonElement | null>(null);
   const resetButtonRef = useRef<HTMLButtonElement | null>(null);
+  const mapRef = useRef<L.Map | null>(null);
+
 
   const handleGeoJsonAdd = (e) => {
     geoJsonLayerRef.current = e.target; // This is the L.GeoJSON layer
@@ -58,7 +60,8 @@ const WorldMap = ({ targetCountry }) => {
     console.log('submit clicked');
     submitButtonRef.current!.disabled = true;
     resetButtonRef.current!.textContent = 'Play Again';
-    console.log({ targetCountry, highlightedCountryRef: highlightedCountryRef.current });
+
+    let correctLayer: L.Layer | null = null;
 
     geoJsonLayerRef.current!.getLayers().forEach((layer) => {
       const countryName = (layer as L.Layer & { feature?: GeoJSON.Feature }).feature?.properties?.name;
@@ -69,9 +72,19 @@ const WorldMap = ({ targetCountry }) => {
         (layer as L.Path).setStyle(getWrongHighlightedStyle());
       } else if (countryName === targetCountry) {
         (layer as L.Path).setStyle(getCorrectHighlightedStyle());
+        correctLayer = layer;
       }
     });
+
+    // If wrong, zoom to the correct one
+    if (highlightedCountryRef.current !== targetCountry && correctLayer && mapRef.current) {
+      const bounds = (correctLayer as L.Path).getBounds?.();
+      if (bounds) {
+        mapRef.current.fitBounds(bounds.pad(0.7)); // pad to give some margin
+      }
+    }
   };
+
 
   const trunOffHighlights = () => {
     geoJsonLayerRef.current!.getLayers().forEach((layer) => {
@@ -121,6 +134,7 @@ const WorldMap = ({ targetCountry }) => {
         maxBounds={maxBounds}
         maxBoundsViscosity={1.0}
         doubleClickZoom={false}
+        ref={mapRef}
       >
 
         <GeoJSON
