@@ -1,15 +1,17 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import WorldMap from './WorldMap.tsx';
 import { makeQuestion } from './utils/makeQuestion.ts';
 import Flag from './Flag.tsx';
-import countries from './data/countries_data.json';
-import { CountryClass } from './utils/types.ts';
+// import countries from './data/countries_data.json';
+import world from './data/world-countries.json';
+// import { CountryClass } from './utils/types.ts';
 
 function App() {
-  const [question, setQuestion] = React.useState<CountryClass>();
+  const [question, setQuestion] = useState<any>();
 
   useEffect(() => {
-    makeQuestion(1, countries).then((res) => {
+    console.log("countries: ", world.features)
+    makeQuestion(1, world.features).then((res) => {
       console.log(res);
       setQuestion(res.answer);
     }
@@ -24,8 +26,8 @@ function App() {
       {
         question ?
           <>
-            <Flag name={question?.name} code={question?.code} />
-            <WorldMap targetCountry={question?.name} />
+            <Flag name={question?.properties?.name} code={question?.code} />
+            <WorldMap targetCountry={question?.properties?.name} />
           </>
           :
           null

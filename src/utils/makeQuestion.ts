@@ -7,7 +7,7 @@ import { CountryClass } from './types';
 
 export const makeQuestion = async (
   numberOfChoices: number,
-  countries: CountryClass[]
+  countries: any[]
 ) => {
   var options = [...countries];
   var count = countries.length;
