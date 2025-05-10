@@ -10,9 +10,7 @@ function App() {
   const [question, setQuestion] = useState<any>();
 
   useEffect(() => {
-    console.log("countries: ", world.features)
     makeQuestion(1, world.features).then((res) => {
-      console.log(res);
       setQuestion(res.answer);
     }
     );

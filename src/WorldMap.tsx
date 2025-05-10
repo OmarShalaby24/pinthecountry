@@ -17,6 +17,16 @@ const WorldMap = ({ targetCountry }) => {
     geoJsonLayerRef.current = e.target; // This is the L.GeoJSON layer
   };
 
+  useEffect(() => {
+    // Expose a function to the browser console
+    window.pr = () => {
+      if (highlightedCountryRef.current) {
+        console.log(`${highlightedCountryRef.current}`);
+      } else {
+        console.log("No country is currently highlighted.");
+      }
+    };
+  }, []);
 
   const getSelectionStyle = () => ({
     fillColor: '#ccc',
